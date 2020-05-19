@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='uu_anonymize',
+    name='anonymize_UU',
     version='0.1',
     description='',
     url='https://github.com/cskaandorp/anonymize',
