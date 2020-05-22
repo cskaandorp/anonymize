@@ -4,6 +4,7 @@ import shutil
 import tempfile
 
 
+from collections import OrderedDict
 from pathlib import Path, PosixPath
 from typing import Union
 
@@ -13,7 +14,7 @@ class Anonymize:
     def __init__(
             self, 
             substitution_dict: Union[dict, Path],
-            id_pattern: str=r'[A-B]\d{5}',
+            id_pattern: str=None,
             zip_format: str='zip'
         ):
 
@@ -27,7 +28,15 @@ class Anonymize:
             )
 
         # the regular expression to locate id numbers
-        self.id_pattern = re.compile(id_pattern)
+        if id_pattern != None:
+            self.id_pattern = re.compile(id_pattern)
+        else:
+            self.id_pattern = False
+            # re-order the OrderedDict such that the longest
+            # keys are first: ensures that shorter versions of keys
+            # will not be substituted first if bigger substitutions 
+            # are possible
+            self.__reorder_dict()
 
         # this is for processed zip archives
         self.zip_format = zip_format
@@ -49,7 +58,18 @@ class Anonymize:
             tuple([item.strip() for item in key_value_pair.values()]) 
             for key_value_pair in reader
         ]
-        return dict(data)
+        return OrderedDict(data)
+
+
+    def __reorder_dict(self):
+        '''Re-order the substitution dictionary such that longest keys 
+        are first'''
+        new_dict = sorted(
+            self.substitution_dict.items(), 
+            key=lambda t: len(t[0]), 
+            reverse=True
+        )
+        self.substitution_dict = OrderedDict(new_dict)
 
 
     def substitute(self, 
@@ -76,7 +96,6 @@ class Anonymize:
             # we will produce a copy
             self.copy = True
 
-        print(self.copy, source_path, target_path)
         self.__traverse_tree(source_path, target_path)
 
 
@@ -206,13 +225,25 @@ class Anonymize:
     def __substitute_ids(self, string: str):
         '''Heart of this class: all matches of the regular expression will be
         substituted for the corresponding value in the id-dictionary'''
-        return self.id_pattern.sub(
-            lambda match: self.substitution_dict.get(
-                match.group(),
-                match.group()
-            ),
-            string
-        )
+        if self.id_pattern == False:
+            #
+            # This might be more efficient:
+            # https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
+            #
+            # loop over dict keys, try to find them in string and replace them 
+            # with their values
+            for k, v in self.substitution_dict.items():
+                string = string.replace(k, v)
+        else:
+            # identify patterns and substitute them with appropriate substitute
+            string = self.id_pattern.sub(
+                lambda match: self.substitution_dict.get(
+                    match.group(),
+                    match.group()
+                ),
+                string
+            )
+        return string
 
 
     # FILE OPERATIONS, OVERRIDE THESE IF APPLICABLE
@@ -249,3 +280,66 @@ class Anonymize:
     def __copy_file(self, source: Path, target: Path):
         if source != target:
             shutil.copy(source, target)
+
+
+
+
+if __name__ == '__main__':
+
+    my_dict = { '1234': '6789', '1010': '2222' }
+
+    root = Path('/Users/casper/Desktop/yids_1234')
+    if root.exists ():
+        shutil.rmtree('/Users/casper/Desktop/yids_1234')
+
+    root = Path('/Users/casper/Desktop/yids_6789')
+    if root.exists ():
+        shutil.rmtree('/Users/casper/Desktop/yids_6789')
+
+    root = Path('/Users/casper/Desktop/kut')
+    if root.exists ():
+        shutil.rmtree('/Users/casper/Desktop/kut')
+    root.mkdir()
+    
+    shutil.copytree(
+        '/Users/casper/Desktop/yids_org',
+        '/Users/casper/Desktop/yids_1234'
+    )
+
+    anon = Anonymize(my_dict, r'\d{4}', zip_format='gztar')
+    anon.substitute('/Users/casper/Desktop/yids_1234', '/Users/casper/Desktop/kut')
+
+    anon = Anonymize(my_dict, r'\d{4}')
+    anon.substitute('/Users/casper/Desktop/yids_1234')
+
+    anon = Anonymize(my_dict, r'\d{4}', zip_format='gztar')
+    anon.substitute('/Users/casper/Desktop/michel_1010.pdf', '/Users/casper/Desktop')
+
+    root = Path('/Users/casper/Desktop/yids_1234')
+    if root.exists ():
+        shutil.rmtree('/Users/casper/Desktop/yids_1234')
+
+    root = Path('/Users/casper/Desktop/yids_6789')
+    if root.exists ():
+        shutil.rmtree('/Users/casper/Desktop/yids_6789')
+
+    root = Path('/Users/casper/Desktop/kut')
+    if root.exists ():
+        shutil.rmtree('/Users/casper/Desktop/kut')
+    root.mkdir()
+    
+    shutil.copytree(
+        '/Users/casper/Desktop/yids_org',
+        '/Users/casper/Desktop/yids_1234'
+    )
+
+    anon = Anonymize('/Users/casper/Desktop/yidsdict.csv', zip_format='gztar')
+    anon.substitute('/Users/casper/Desktop/yids_1234', '/Users/casper/Desktop/kut')
+
+    anon = Anonymize('/Users/casper/Desktop/yidsdict.csv')
+    anon.substitute('/Users/casper/Desktop/yids_1234')
+
+    anon = Anonymize('/Users/casper/Desktop/yidsdict.csv')
+    anon.substitute('/Users/casper/Desktop/datadownload.zip', '/Users/casper/Desktop/bucket')
+
+
