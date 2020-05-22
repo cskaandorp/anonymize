@@ -233,7 +233,7 @@ class Anonymize:
             # loop over dict keys, try to find them in string and replace them 
             # with their values
             for k, v in self.substitution_dict.items():
-                string = string.replace(k, v)
+                string = re.sub(k, v, string, flags=re.IGNORECASE)
         else:
             # identify patterns and substitute them with appropriate substitute
             string = self.id_pattern.sub(
@@ -251,6 +251,7 @@ class Anonymize:
 
     def __make_dir(self, path: Path):
         path.mkdir(exist_ok=True)
+
 
     def __read_file(self, source: Path):
         f = open(source, 'r')
@@ -280,66 +281,4 @@ class Anonymize:
     def __copy_file(self, source: Path, target: Path):
         if source != target:
             shutil.copy(source, target)
-
-
-
-
-if __name__ == '__main__':
-
-    my_dict = { '1234': '6789', '1010': '2222' }
-
-    root = Path('/Users/casper/Desktop/yids_1234')
-    if root.exists ():
-        shutil.rmtree('/Users/casper/Desktop/yids_1234')
-
-    root = Path('/Users/casper/Desktop/yids_6789')
-    if root.exists ():
-        shutil.rmtree('/Users/casper/Desktop/yids_6789')
-
-    root = Path('/Users/casper/Desktop/kut')
-    if root.exists ():
-        shutil.rmtree('/Users/casper/Desktop/kut')
-    root.mkdir()
-    
-    shutil.copytree(
-        '/Users/casper/Desktop/yids_org',
-        '/Users/casper/Desktop/yids_1234'
-    )
-
-    anon = Anonymize(my_dict, r'\d{4}', zip_format='gztar')
-    anon.substitute('/Users/casper/Desktop/yids_1234', '/Users/casper/Desktop/kut')
-
-    anon = Anonymize(my_dict, r'\d{4}')
-    anon.substitute('/Users/casper/Desktop/yids_1234')
-
-    anon = Anonymize(my_dict, r'\d{4}', zip_format='gztar')
-    anon.substitute('/Users/casper/Desktop/michel_1010.pdf', '/Users/casper/Desktop')
-
-    root = Path('/Users/casper/Desktop/yids_1234')
-    if root.exists ():
-        shutil.rmtree('/Users/casper/Desktop/yids_1234')
-
-    root = Path('/Users/casper/Desktop/yids_6789')
-    if root.exists ():
-        shutil.rmtree('/Users/casper/Desktop/yids_6789')
-
-    root = Path('/Users/casper/Desktop/kut')
-    if root.exists ():
-        shutil.rmtree('/Users/casper/Desktop/kut')
-    root.mkdir()
-    
-    shutil.copytree(
-        '/Users/casper/Desktop/yids_org',
-        '/Users/casper/Desktop/yids_1234'
-    )
-
-    anon = Anonymize('/Users/casper/Desktop/yidsdict.csv', zip_format='gztar')
-    anon.substitute('/Users/casper/Desktop/yids_1234', '/Users/casper/Desktop/kut')
-
-    anon = Anonymize('/Users/casper/Desktop/yidsdict.csv')
-    anon.substitute('/Users/casper/Desktop/yids_1234')
-
-    anon = Anonymize('/Users/casper/Desktop/yidsdict.csv')
-    anon.substitute('/Users/casper/Desktop/datadownload.zip', '/Users/casper/Desktop/bucket')
-
 
