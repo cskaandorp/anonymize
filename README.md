@@ -24,8 +24,8 @@ anonymize_csv = Anonymize('/Users/casper/Desktop/keys.csv')
 
 # using a dictionary instead of a csv file:
 my_dict = {
-    'abcd': 1234,
-    'efgh': 5678
+    'A1234': 'aaaa',
+    'B9876': 'bbbb',
 }
 anonymize_dict = Anonymize(my_dict)
 
@@ -37,4 +37,8 @@ When using a csv-file, anonymize_UU will assume your file contains two columns: 
 
 When using a dictionary, the keys will be replaced by their values.
 
-Performance might be enhanced when your keywords can be generalized into regular expressions. Anynomize_UU will search these patterns and replace them instead of matching the entire dictionary/csv-file against file contents or file/folder-paths. 
+Performance might be enhanced when your keywords can be generalized into regular expressions. Anynomize_UU will search these patterns and replace them instead of matching the entire dictionary/csv-file against file contents or file/folder-paths. Example:
+
+```
+anonymize_regex = Anonymize(my_dict, pattern=r'[A-B]\d{4}')
+```

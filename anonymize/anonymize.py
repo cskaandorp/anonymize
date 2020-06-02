@@ -14,7 +14,7 @@ class Anonymize:
     def __init__(
             self, 
             substitution_dict: Union[dict, Path],
-            id_pattern: str=None,
+            pattern: str=None,
             zip_format: str='zip'
         ):
 
@@ -28,10 +28,10 @@ class Anonymize:
             )
 
         # the regular expression to locate id numbers
-        if id_pattern != None:
-            self.id_pattern = re.compile(id_pattern)
+        if pattern != None:
+            self.pattern = re.compile(pattern)
         else:
-            self.id_pattern = False
+            self.pattern = False
             # re-order the OrderedDict such that the longest
             # keys are first: ensures that shorter versions of keys
             # will not be substituted first if bigger substitutions 
@@ -220,7 +220,7 @@ class Anonymize:
     def __substitute_ids(self, string: str):
         '''Heart of this class: all matches of the regular expression will be
         substituted for the corresponding value in the id-dictionary'''
-        if self.id_pattern == False:
+        if self.pattern == False:
             #
             # This might be more efficient:
             # https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
@@ -231,7 +231,7 @@ class Anonymize:
                 string = re.sub(k, v, string, flags=re.IGNORECASE)
         else:
             # identify patterns and substitute them with appropriate substitute
-            string = self.id_pattern.sub(
+            string = self.pattern.sub(
                 lambda match: self.substitution_dict.get(
                     match.group(),
                     match.group()
@@ -276,5 +276,4 @@ class Anonymize:
     def __copy_file(self, source: Path, target: Path):
         if source != target:
             shutil.copy(source, target)
-
 
