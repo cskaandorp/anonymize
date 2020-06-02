@@ -45,7 +45,7 @@ anonymize_regex = Anonymize(my_dict, pattern=r'[A-B]\d{4}')
 
 ### Copy vs. replacing
 
-Anonymize_UU is able to create a copy of the processed file-tree or replace it. The `substitute` method takes a mandatory source-path argument (path to a file, folder or zip-archive, either a string or a [Path](https://docs.python.org/3/library/pathlib.html#basic-use) object) and an optional target-path argument (again, a string or a [Path](https://docs.python.org/3/library/pathlib.html#basic-use) object). The target **needs to refer to a folder**. The target-folder will be created if it doesn't exist.
+Anonymize_UU is able to create a copy of the processed file-tree or replace it. The `substitute` method takes a mandatory source-path argument (path to a file, folder or zip-archive, either a string or a [Path](https://docs.python.org/3/library/pathlib.html#basic-use) object) and an optional target-path argument (again, a string or [Path](https://docs.python.org/3/library/pathlib.html#basic-use) object). The target **needs to refer to a folder**. The target-folder will be created if it doesn't exist.
 
 When the target argument is provided, anonymize_UU will create a processed copy of the source into the target-folder. When the target argument is omitted, the source will be overwritten by a processed version of it:
 
