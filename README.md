@@ -45,7 +45,7 @@ anonymize_regex = Anonymize(my_dict, pattern=r'[A-B]\d{4}')
 
 ### Windows usage
 
-There is an issue with re-creating zip archives. Make sure you **run anonymize_UU as administrator**.
+There is an issue with creating zip archives. Make sure you **run anonymize_UU as administrator**.
 
 ### Copy vs. replacing
 
