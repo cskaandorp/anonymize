@@ -4,9 +4,9 @@ This description can be found [on GitHub here](https://github.com/cskaandorp/ano
 
 Anonymize_UU facilitates the replacement of keywords or regex-patterns within a file tree or zipped archive. It recursively traverses the tree, opens supported files and substitutes any found pattern or keyword with a replacement. Besides contents, anomize_UU will substitue keywords/patterns in file/folder-paths as well.
 
-As of now, Anonymize_UU supports text-based files, like .txt, .html, .json and .csv. UTF-8 encoding is assumed. Besides text files, Anonymize_UU is also able to handle (nested) zip archives. These archives will be unpacked in a temp folder, processed and zipped again.
-
 The result will be either a copied or replaced version of the original file-tree with all substitutions made.
+
+As of now, Anonymize_UU supports text-based files, like .txt, .html, .json and .csv. UTF-8 encoding is assumed. Besides text files, Anonymize_UU is also able to handle (nested) zip archives. These archives will be unpacked in a temp folder, processed and zipped again.
 
 ## Installation
 
@@ -45,7 +45,7 @@ anonymize_regex = Anonymize(my_dict, pattern=r'[A-B]\d{4}')
 
 ### Copy vs. replacing
 
-Anonymize_UU is able to create a copy of the processed file-tree or replace it. The $substitute$ method takes a mandatory source-path argument (path to a file, folder or zip-archive) and an optional target-path argument. The target **needs to refer to a folder**. The target-folder will be created if it doesn't exist.
+Anonymize_UU is able to create a copy of the processed file-tree or replace it. The `substitute` method takes a mandatory source-path argument (path to a file, folder or zip-archive) and an optional target-path argument. The target **needs to refer to a folder**. The target-folder will be created if it doesn't exist.
 
 When the target argument is provided, anonymize_UU will create a processed copy of the source into the target-folder. When the target argument is omitted, the source will be overwritten by a processed version of it:
 
