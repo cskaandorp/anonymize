@@ -2,7 +2,7 @@
 
 This description can be found [on GitHub here](https://github.com/cskaandorp/anonymize)
 
-Anonymize_UU facilitates the replacement of keywords or patterns within a file tree or zipped archive. It recursively traverses the tree, reads supported files and substitutes any found pattern or keyword with a replacement. Besides contents, anomize_UU will substitue keywords/patterns in file/folder-paths as well.
+Anonymize_UU facilitates the replacement of keywords or regex-patterns within a file tree or zipped archive. It recursively traverses the tree, reads supported files and substitutes any found pattern or keyword with a replacement. Besides contents, anomize_UU will substitue keywords/patterns in file/folder-paths as well.
 
 As of now, Anonymize_UU supports text-based files, like .txt, .html, .json and .csv. UTF-8 encoding is assumed. Besides text files, Anonymize_UU is also able to handle (nested) zip archives. These archives will be unpacked in a temp folder, processed and zipped again.
 
