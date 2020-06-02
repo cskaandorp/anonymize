@@ -43,6 +43,10 @@ Performance might be enhanced when your keywords can be generalized into regular
 anonymize_regex = Anonymize(my_dict, pattern=r'[A-B]\d{4}')
 ```
 
+### Windows usage
+
+There is an issue with re-creating zip archives. Make sure you **run anonymize_UU as administrator**.
+
 ### Copy vs. replacing
 
 Anonymize_UU is able to create a copy of the processed file-tree or replace it. The `substitute` method takes a mandatory source-path argument (path to a file, folder or zip-archive, either a string or a [Path](https://docs.python.org/3/library/pathlib.html#basic-use) object) and an optional target-path argument (again, a string or [Path](https://docs.python.org/3/library/pathlib.html#basic-use) object). The target **needs to refer to a folder**. The target-folder will be created if it doesn't exist.
