@@ -42,3 +42,21 @@ Performance might be enhanced when your keywords can be generalized into regular
 ```
 anonymize_regex = Anonymize(my_dict, pattern=r'[A-B]\d{4}')
 ```
+
+### Copy vs. replacing
+
+Anonymize_UU is able to create a copy of the processed file-tree or replace it. The $substitute$ method takes a mandatory source-path argument (path to a file, folder or zip-archive) and an optional target-path argument. The target **needs to refer to a folder**. The target-folder will be created if it doesn't exist.
+
+When the target argument is provided, anonymize_UU will create a processed copy of the source into the target-folder. When the target argument is omitted, the source will be overwritten by a processed version of it:
+
+```
+# process the datadownload.zip file, replace all patterns and write
+# a copy to the 'bucket' folder.
+anonymize_regex.substitute(
+    '/Users/casper/Desktop/datadownload.zip', 
+    '/Users/casper/Desktop/bucket'
+)
+
+# process the 'download' folder and replace it contents in the original
+anonymize_regex.substitute('/Users/casper/Desktop/download')
+```
