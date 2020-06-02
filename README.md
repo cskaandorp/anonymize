@@ -19,5 +19,16 @@ Import the Anomymize class in your code and create an anonymization object like 
 ```
 from anonymize import Anonymize
 
-anonymize = Anonymize('/Users/casper/Desktop/keys.csv')
+# refer to csv files in which keywords and substitutions are paired
+anonymize_csv = Anonymize('/Users/casper/Desktop/keys.csv')
+
+# using a dictionary instead of a csv file:
+my_dict = {
+    'abcd': 1234,
+    'efgh': 5678
+}
+anonymize_dict = Anonymize(my_dict)
+
+# specifying a zip-format to zip unpacked archives after processing (zip is default)
+anonymize_zip = Anonymize('/Users/casper/Desktop/keys.csv', zip_format='gztar')
 ```
