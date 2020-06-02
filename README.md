@@ -2,9 +2,9 @@
 
 This description can be found [on GitHub here](https://github.com/cskaandorp/anonymize)
 
-Anonymize_UU facilitates the substittion of keywords or patterns within a file tree or zipped archive. In case of a zip-file, anonymize_UU will unzip the archive in a temp directory and starts it work from there.It recursively traverses the tree, reads supported files and subsitutes any found pattern or keyword. Besides contents, anomize_UU will substitue keywords/patterns in file/folder-paths as well.
+Anonymize_UU facilitates the replacement of keywords or patterns within a file tree or zipped archive. It recursively traverses the tree, reads supported files and substitutes any found pattern or keyword with a replacement. Besides contents, anomize_UU will substitue keywords/patterns in file/folder-paths as well.
 
-As of now, Anonymize_UU supports text-based files, like .txt, .html, .json and .csv. UTF-8 encoding is assumed. Besides text files, Anonymize_UU is also able to handle nestes zip archives. These archives will be unpacked in a temp folder, processed and zipped again.
+As of now, Anonymize_UU supports text-based files, like .txt, .html, .json and .csv. UTF-8 encoding is assumed. Besides text files, Anonymize_UU is also able to handle (nested) zip archives. These archives will be unpacked in a temp folder, processed and zipped again.
 
 The result will be either a copied or replaced version of the original file-tree with all substitutions made.
 
@@ -29,6 +29,12 @@ my_dict = {
 }
 anonymize_dict = Anonymize(my_dict)
 
-# specifying a zip-format to zip unpacked archives after processing (zip is default)
+# specifying a zip-format to zip unpacked archives after processing (.zip is default)
 anonymize_zip = Anonymize('/Users/casper/Desktop/keys.csv', zip_format='gztar')
 ```
+
+When using a csv-file, anonymize_UU will assume your file contains two columns: the left column contains the keywords which need to be replaced, the right column contains their substitutions. **Column headers are mandatory**, but don't have to follow a specific format.
+
+When using a dictionary, the keys will be replaced by their values.
+
+Performance might be enhanced when your keywords can be generalized into regular expressions. Anynomize_UU will search these patterns and replace them instead of matching the entire dictionary/csv-file against file contents or file/folder-paths. 
