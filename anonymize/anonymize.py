@@ -43,8 +43,7 @@ class Anonymize:
 
         # Are we going to make a copy?
         self.copy = False
-        # Are we logging
-        self.enable_logging = False
+
 
 
     def __convert_csv_to_dict(self, path_to_csv: str):
@@ -74,12 +73,8 @@ class Anonymize:
 
     def substitute(self, 
         source_path: Union[str, Path], 
-        target_path: Union[str, Path]=None,
-        enable_logging: bool=False
+        target_path: Union[str, Path]=None
         ):
-
-        # set logging
-        self.enable_logging = enable_logging
 
         # ensure source_path is a Path object
         if type(source_path) is str:
@@ -254,14 +249,14 @@ class Anonymize:
 
 
     def __read_file(self, source: Path):
-        f = open(source, 'r')
+        f = open(source, 'r', encoding='utf-8')
         contents = list(f)
         f.close()
         return contents
 
 
     def __write_file(self, path: Path, contents: str):
-        f = open(path, 'w')
+        f = open(path, 'w', encoding='utf-8')
         f.writelines(contents)
         f.close()
 
@@ -281,4 +276,5 @@ class Anonymize:
     def __copy_file(self, source: Path, target: Path):
         if source != target:
             shutil.copy(source, target)
+
 
