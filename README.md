@@ -57,6 +57,14 @@ anonymize_regex.substitute(
     '/Users/casper/Desktop/bucket'
 )
 
-# process the 'download' folder and replace it contents in the original
+# process the 'download' folder and replace the original by its processed 
+# version
 anonymize_regex.substitute('/Users/casper/Desktop/download')
+
+# process a single file, and replace it
+anonymize_regex.substitute('/Users/casper/Desktop/my_file.json')
 ```
+
+## Todo
+
+Testing ;)
