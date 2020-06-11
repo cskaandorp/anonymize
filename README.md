@@ -43,7 +43,7 @@ Performance might be enhanced when your keywords can be generalized into regular
 anonymize_regex = Anonymize(my_dict, pattern=r'[A-B]\d{4}')
 ```
 
-By using the `use_word_boundaries` argument (defaults to False), the algorithm ignores substring matches. If 'ted' is a key in your dictionary, without `use_word_boundaries` the algorithm will replace the 'ted' part in f.i. 'created_at'. You can overcome this problem by setting `use_word_boundaries` to True. It will put the `\b`-anchor around your regex pattern or dictionary keys. The beauty of the boundary anchors is that '@' is considered a boundary as well, and thus names in email address can be replaced in email addresses although these names are a substring. Example:
+By using the `use_word_boundaries` argument (defaults to False), the algorithm ignores substring matches. If 'ted' is a key in your dictionary, without `use_word_boundaries` the algorithm will replace the 'ted' part in f.i. 'created_at'. You can overcome this problem by setting `use_word_boundaries` to True. It will put the `\b`-anchor around your regex pattern or dictionary keys. The beauty of the boundary anchors is that '@' is considered a boundary as well, and thus names in email addresses can be replaced although these names are substrings within these addresses. Example:
 
 ```
 anonymize_regex = Anonymize(my_dict, use_word_boundaries=True)
