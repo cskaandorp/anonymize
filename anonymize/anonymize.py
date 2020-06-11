@@ -15,6 +15,7 @@ class Anonymize:
             self, 
             substitution_dict: Union[dict, Path],
             pattern: str=None,
+            use_word_boundaries=False,
             zip_format: str='zip'
         ):
 
@@ -27,8 +28,14 @@ class Anonymize:
                 substitution_dict
             )
 
+        # using word boundaries around pattern or dict keys, avoids
+        # substring-matching
+        self.use_word_boundaries = use_word_boundaries
+
         # the regular expression to locate id numbers
         if pattern != None:
+            if self.use_word_boundaries == True:
+                pattern = r'\b{}\b'.format(pattern)
             self.pattern = re.compile(pattern)
         else:
             self.pattern = False
@@ -37,6 +44,15 @@ class Anonymize:
             # will not be substituted first if bigger substitutions 
             # are possible
             self.__reorder_dict()
+            # add word boundaries if requested
+            if self.use_word_boundaries == True:
+                self.substitution_dict = dict([
+                    (r'\b{}\b'.format(key), value)
+                    for key, value in self.substitution_dict.items()
+                ])
+
+
+
 
         # this is for processed zip archives
         self.zip_format = zip_format
@@ -227,8 +243,8 @@ class Anonymize:
             #
             # loop over dict keys, try to find them in string and replace them 
             # with their values
-            for k, v in self.substitution_dict.items():
-                string = re.sub(k, v, string, flags=re.IGNORECASE)
+            for key, value in self.substitution_dict.items():
+                string = re.sub(key, value, string, flags=re.IGNORECASE)
         else:
             # identify patterns and substitute them with appropriate substitute
             string = self.pattern.sub(

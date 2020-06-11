@@ -35,12 +35,18 @@ anonymize_zip = Anonymize('/Users/casper/Desktop/keys.csv', zip_format='gztar')
 
 When using a csv-file, anonymize_UU will assume your file contains two columns: the left column contains the keywords which need to be replaced, the right column contains their substitutions. **Column headers are mandatory**, but don't have to follow a specific format.
 
-When using a dictionary, the keys will be replaced by their values.
+When using a dictionary only (absence of the `pattern` argument), the keys will be replaced by their values.
 
 Performance might be enhanced when your keywords can be generalized into regular expressions. Anynomize_UU will search these patterns and replace them instead of matching the entire dictionary/csv-file against file contents or file/folder-paths. Example:
 
 ```
 anonymize_regex = Anonymize(my_dict, pattern=r'[A-B]\d{4}')
+```
+
+By using the `use_word_boundaries` argument (defaults to False), the algorithm ignores substring matches. If 'ted' is a key in your dictionary, without `use_word_boundaries` the algorithm will replace the 'ted' part in f.i. 'created_at'. You can overcome this problem by setting `use_word_boundaries` to True. It will put the `\b`-anchor around your regex pattern or dictionary keys. The beauty of the boundary anchors is that '@' is considered a boundary as well, and thus names in email address can be replaced in email addresses although these names are a substring. Example:
+
+```
+anonymize_regex = Anonymize(my_dict, use_word_boundaries=True)
 ```
 
 ### Windows usage
