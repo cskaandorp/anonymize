@@ -5,8 +5,8 @@ with open("README.md", "r") as fh:
 
 setup(
     name='anonymize_UU',
-    version='0.1.3',
-    description='A tool to substitue ids in a file tree',
+    version='0.1.4',
+    description='A tool to substitue patterns/names in a file tree',
     long_description = long_description,
     long_description_content_type = "text/markdown",
     url='https://github.com/cskaandorp/anonymize',
