@@ -24,7 +24,7 @@ class Anonymize:
         if type(substitution_dict) is dict:
             self.substitution_dict = substitution_dict
         else:
-            self.substitution_dict = self.__convert_csv_to_dict(
+            self.substitution_dict = self._convert_csv_to_dict(
                 substitution_dict
             )
 
@@ -43,7 +43,7 @@ class Anonymize:
             # keys are first: ensures that shorter versions of keys
             # will not be substituted first if bigger substitutions 
             # are possible
-            self.__reorder_dict()
+            self._reorder_dict()
             # add word boundaries if requested
             if self.use_word_boundaries == True:
                 self.substitution_dict = dict([
@@ -62,7 +62,7 @@ class Anonymize:
 
 
 
-    def __convert_csv_to_dict(self, path_to_csv: str):
+    def _convert_csv_to_dict(self, path_to_csv: str):
         '''Converts 2-column csv file into dictionary. Left
         column contains ids, right column contains substitutions.
         '''
@@ -76,7 +76,7 @@ class Anonymize:
         return OrderedDict(data)
 
 
-    def __reorder_dict(self):
+    def _reorder_dict(self):
         '''Re-order the substitution dictionary such that longest keys 
         are first'''
         new_dict = sorted(
@@ -107,26 +107,26 @@ class Anonymize:
             # we will produce a copy
             self.copy = True
 
-        self.__traverse_tree(source_path, target_path)
+        self._traverse_tree(source_path, target_path)
 
 
-    def __traverse_tree(self, 
+    def _traverse_tree(self, 
         source: Path,
         target: Path
         ):
 
         if source.is_file():
-            self.__process_file(source, target)
+            self._process_file(source, target)
         else:
 
             # this is a folder, rename/create if necessary
-            (source, target) = self.__process_folder(source, target)
+            (source, target) = self._process_folder(source, target)
 
             for child in source.iterdir():
-                self.__traverse_tree(child, target)
+                self._traverse_tree(child, target)
 
     
-    def __process_folder(self, 
+    def _process_folder(self, 
         source: Path,
         target: Path
         ) -> Path:
@@ -134,76 +134,76 @@ class Anonymize:
         result = None
 
         # process target
-        target = self.__process_target(source, target)
+        target = self._process_target(source, target)
 
         if self.copy == True:
             # we are making a copy, create this folder in target
-            self.__make_dir(target)
+            self._make_dir(target)
             result = (source, target)
         else:
             # we are only doing a substitution, rename
-            self.__rename_file_or_folder(source, target)
+            self._rename_file_or_folder(source, target)
             result = (target, target)
 
         return result
             
 
-    def __process_file(self, 
+    def _process_file(self, 
         source: Path,
         target: Path
         ):
 
         # process target
-        target = self.__process_target(source, target)
+        target = self._process_target(source, target)
 
         extension = source.suffix
 
         if extension in ['.txt', '.csv', '.html', '.json']:
-            self.__process_txt_based_file(source, target)
+            self._process_txt_based_file(source, target)
         elif extension in ['.zip', '.gzip', '.gz']:
-            self.__process_zip_file(source, target, extension)
+            self._process_zip_file(source, target, extension)
         else:
-            self.__process_unknown_file_type(source, target)
+            self._process_unknown_file_type(source, target)
 
 
-    def __process_target(self,
+    def _process_target(self,
         source: Path,
         target: Path
         ):
-        substituted_name = self.__substitute_ids(source.name)
+        substituted_name = self._substitute_ids(source.name)
         return target / substituted_name
 
 
-    def __process_txt_based_file(self,
+    def _process_txt_based_file(self,
         source: Path,
         target: Path
         ):
 
         # read contents
-        contents = self.__read_file(source)
+        contents = self._read_file(source)
         # substitute
-        substituted_contents = [self.__substitute_ids(line) for line in contents]
+        substituted_contents = [self._substitute_ids(line) for line in contents]
         if self.copy == False:
             # remove the original file
-            self.__remove_file(source)
+            self._remove_file(source)
         # write processed file
-        self.__write_file(target, substituted_contents)
+        self._write_file(target, substituted_contents)
 
 
-    def __process_unknown_file_type(self,
+    def _process_unknown_file_type(self,
         source: Path,
         target: Path
         ):
 
         if self.copy == False:
             # just rename the file
-            self.__rename_file_or_folder(source, target)
+            self._rename_file_or_folder(source, target)
         else:
             # copy source into target
-            self.__copy_file(source, target)
+            self._copy_file(source, target)
 
 
-    def __process_zip_file(self, 
+    def _process_zip_file(self, 
         source: Path,
         target: Path,
         extension: str
@@ -230,10 +230,10 @@ class Anonymize:
             self.copy = copy
             # remove original zipfile if we are not producing a copy
             if self.copy == False:
-                self.__remove_file(source)
+                self._remove_file(source)
 
 
-    def __substitute_ids(self, string: str):
+    def _substitute_ids(self, string: str):
         '''Heart of this class: all matches of the regular expression will be
         substituted for the corresponding value in the id-dictionary'''
         if self.pattern == False:
@@ -260,38 +260,36 @@ class Anonymize:
     # FILE OPERATIONS, OVERRIDE THESE IF APPLICABLE
 
 
-    def __make_dir(self, path: Path):
+    def _make_dir(self, path: Path):
         path.mkdir(exist_ok=True)
 
 
-    def __read_file(self, source: Path):
+    def _read_file(self, source: Path):
         f = open(source, 'r', encoding='utf-8')
         contents = list(f)
         f.close()
         return contents
 
 
-    def __write_file(self, path: Path, contents: str):
+    def _write_file(self, path: Path, contents: str):
         f = open(path, 'w', encoding='utf-8')
         f.writelines(contents)
         f.close()
 
 
-    def __remove_file(self, path: Path):
+    def _remove_file(self, path: Path):
         path.unlink()
 
     
-    def __remove_folder(self, path: Path):
+    def _remove_folder(self, path: Path):
         shutil.rmtree(path)
 
 
-    def __rename_file_or_folder(self, source: Path, target: Path):
+    def _rename_file_or_folder(self, source: Path, target: Path):
         source.replace(target)
 
 
-    def __copy_file(self, source: Path, target: Path):
+    def _copy_file(self, source: Path, target: Path):
         if source != target:
             shutil.copy(source, target)
-
-
 
