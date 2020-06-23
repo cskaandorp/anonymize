@@ -15,6 +15,7 @@ class Anonymize:
             self, 
             substitution_dict: Union[dict, Path],
             pattern: str=None,
+            flags=0,
             use_word_boundaries=False,
             zip_format: str='zip'
         ):
@@ -28,6 +29,9 @@ class Anonymize:
                 substitution_dict
             )
 
+        # expression behaviour modifiers
+        self.flags = flags
+
         # using word boundaries around pattern or dict keys, avoids
         # substring-matching
         self.use_word_boundaries = use_word_boundaries
@@ -36,7 +40,7 @@ class Anonymize:
         if pattern != None:
             if self.use_word_boundaries == True:
                 pattern = r'\b{}\b'.format(pattern)
-            self.pattern = re.compile(pattern)
+            self.pattern = re.compile(pattern, flags=self.flags)
         else:
             self.pattern = False
             # re-order the OrderedDict such that the longest
@@ -50,9 +54,6 @@ class Anonymize:
                     (r'\b{}\b'.format(key), value)
                     for key, value in self.substitution_dict.items()
                 ])
-
-
-
 
         # this is for processed zip archives
         self.zip_format = zip_format
@@ -118,7 +119,6 @@ class Anonymize:
         if source.is_file():
             self._process_file(source, target)
         else:
-
             # this is a folder, rename/create if necessary
             (source, target) = self._process_folder(source, target)
 
@@ -244,7 +244,7 @@ class Anonymize:
             # loop over dict keys, try to find them in string and replace them 
             # with their values
             for key, value in self.substitution_dict.items():
-                string = re.sub(key, value, string, flags=re.IGNORECASE)
+                string = re.sub(key, str(value), string, flags=self.flags)
         else:
             # identify patterns and substitute them with appropriate substitute
             string = self.pattern.sub(

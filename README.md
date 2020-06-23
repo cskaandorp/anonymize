@@ -43,6 +43,12 @@ Performance might be enhanced when your keywords can be generalized into regular
 anonymize_regex = Anonymize(my_dict, pattern=r'[A-B]\d{4}')
 ```
 
+By default is case sensitive by default. The regular expressions that take care of the replacements can be modified by using the `flag` parameter. It takes one or more variables [which can be found here](https://docs.python.org/3/library/re.html). Multiple variables are combined by a bitwise OR (the | operator). Example for a case-insensitive substitution:
+
+```
+anonymize_regex = Anonymize(my_dict, flags=re.IGNORECASE)
+```
+
 By using the `use_word_boundaries` argument (defaults to False), the algorithm ignores substring matches. If 'ted' is a key in your dictionary, without `use_word_boundaries` the algorithm will replace the 'ted' part in f.i. 'created_at'. You can overcome this problem by setting `use_word_boundaries` to True. It will put the `\b`-anchor around your regex pattern or dictionary keys. The beauty of the boundary anchors is that '@' is considered a boundary as well, and thus names in email addresses can be replaced. Example:
 
 ```
