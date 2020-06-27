@@ -158,7 +158,7 @@ class Anonymize:
 
         extension = source.suffix
 
-        if extension in ['.txt', '.csv', '.html', '.json']:
+        if extension in ['.txt', '.csv', '.html', '.htm', '.xml', '.json']:
             self._process_txt_based_file(source, target)
         elif extension in ['.zip', '.gzip', '.gz']:
             self._process_zip_file(source, target, extension)
