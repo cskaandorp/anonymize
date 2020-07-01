@@ -74,6 +74,10 @@ class Anonymize:
             tuple([item.strip() for item in key_value_pair.values()]) 
             for key_value_pair in reader
         ]
+        # escape the keys, I want to do this in the previous line, but
+        # the code get's unreadable
+        data = [(re.escape(key), value) for (key, value) in data]
+        # return ordered dictionary
         return OrderedDict(data)
 
 
